@@ -1,0 +1,150 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>校园送水后台管理系统</title>
+
+<!--Bootstrap固定框架-->
+<link rel='stylesheet' th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.css}">
+<link rel='stylesheet' th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap-theme.css}">
+<!--图标库-->
+<link rel='stylesheet' th:href='@{/css/material-design-iconic-font.min.css}'>
+<!--核心样式-->
+<link rel="stylesheet" th:href="@{/css/style.css}">
+<script th:src="@{/webjars/jquery/3.3.1/jquery.js}"></script>
+</head>
+<script>
+
+  $().ready(function () {
+    getCustomerList();
+  });
+
+
+
+
+
+  /**
+   * 获取客户列表
+   */
+  function getCustomerList() {
+    $.ajax({
+      url : "getCustomerList",
+      type : "get",
+      dataType : "json",
+      success : function (resp) {
+          if(resp.code === 200){
+            $("#custTable").empty();
+            $("#custTable").append(
+                    "<tr>\n" +
+                    "<td>客户编号</td>\n" +
+                    "<td>客户名称</td>\n" +
+                    "<td>客户地址</td>\n" +
+                    "<td>联系方式</td>\n" +
+                    "<td>水票数量</td>\n" +
+                    "<td>操作</td>\n" +
+                    "</tr>\n"
+            );
+
+            $.each(resp.resultData,function (i,cust){
+
+              $("#custTable").append("<tr>\n" +
+                      "<td>"+cust.cid+"</td>\n" +
+                      "<td>"+cust.custName+"</td>\n" +
+                      "<td>"+cust.custAddress+"</td>\n" +
+                      "<td>"+cust.custMobile+"</td>\n" +
+                      "<td>"+cust.custTicket+"</td>\n" +
+                      "<td>\n" +
+                      "<button class='btn btn-default' onclick='goUpdate("+cust.cid+")'>修改</button>\n" +
+                      "<button class='btn btn-danger' onclick='delBtn("+cust.cid+")'>删除</button>\n" +
+                      "</td>\n" +
+                      "</tr>");
+            })
+          }else {
+            alert("客户为空！")
+          }
+      }
+    })
+  }
+
+
+</script>
+<body>
+
+<div id="viewport">
+
+  <!-- Sidebar -->
+  <div id="sidebar">
+    <header>
+      <a href="#">校园送水系统</a>
+    </header>
+    <ul class="nav">
+      <li>
+        <a onclick="getCustomerList()">
+          <i class="zmdi zmdi-view-dashboard"></i> 客户管理
+        </a>
+      </li>
+      <li>
+        <a>
+          <i class="zmdi zmdi-link"></i> 员工管理
+        </a>
+      </li>
+      <li>
+        <a>
+          <i class="zmdi zmdi-widgets"></i> 送水历史管理
+        </a>
+
+    </ul>
+  </div>
+  
+  <!-- Content -->
+  <div id="content">
+    <nav class="navbar navbar-default">
+      <div class="container-fluid" >
+        <ul class="nav navbar-nav navbar-right">
+          <li>
+            <a href="#"><i class="zmdi zmdi-notifications text-danger"></i>
+            </a>
+          </li>
+          <li><a href="#">测试用户123</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="container-fluid">
+      <div class="container-fluid">
+        <div class="row">
+
+          <div class="col-md-12">
+
+            <div class="col-md-4">
+              <button  class="btn btn-primary" onclick="goAdd()">添加客户</button>
+            </div>
+
+            <div class="col-md-8 inline">
+
+
+              <form class="form-inline">
+                <div class="form-group">
+                  <input type="text" disabled="" class="form-control" id="name" name="name" placeholder="请输入"/>
+                </div>
+                <button type="button" id="serchBtn" class="btn btn-default">搜索</button>
+              </form>
+            </div>
+
+
+
+
+            <table class="table table-hover table-striped" >
+              <tbody id="custTable">
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

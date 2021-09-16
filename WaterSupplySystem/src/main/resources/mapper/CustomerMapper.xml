@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sy.watersupplysystem.mapper.CustomerMapper">
+    <resultMap id="AccountResultMap" type="com.sy.watersupplysystem.entities.Customer">
+        <id column="cid" jdbcType="INTEGER" property="cid"/>
+        <result column="cust_name" jdbcType="VARCHAR" property="custName"/>
+        <result column="cust_mobile" jdbcType="VARCHAR" property="custMobile"/>
+        <result column="cust_address" jdbcType="VARCHAR" property="custAddress"/>
+        <result column="cust_ticket" jdbcType="VARCHAR" property="custTicket"/>
+    </resultMap>
+
+    <select id="getCustomerList" resultMap="AccountResultMap">
+        select cid,cust_name,cust_mobile,cust_address,cust_ticket
+        from tb_customer
+    </select>
+
+
+
+
+</mapper>

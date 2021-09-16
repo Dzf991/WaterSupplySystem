@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>Login</title>
+		<meta charset="utf-8">
+		<link th:href="@{/css/style2.css}" rel='stylesheet' type='text/css' />
+    <script th:src="@{/webjars/jquery/3.3.1/jquery.js}"></script>
+
+</head>
+<script>
+
+    function goRegister() {
+        $.ajax({
+            url : "register",
+            type:"post",
+            data:{
+                userName : $("#userName").val(),
+                userPassword: $("#userPassword").val(),
+                userMobile: $("#userMobile").val(),
+                userMail: $("#userMail").val()
+            },
+            dataType: "json",
+            success : function (resp) {
+                if (resp.code ===200){
+                    alert("用户注册成功！返回登录界面。");
+                    window.location = "/index.html"
+                }else {
+                    alert("用户注册失败！请重试。");
+                }
+            }
+        })
+    }
+
+	function goBack() {
+		window.history.back();
+	}
+</script>
+<body>
+	 <div class="main">
+		<div class="login-form">
+
+			<h1>用户注册</h1>
+            <form>
+               用户名： <input type="text" class="text" id="userName" name="userName" required placeholder="请输入用户名">
+                密码：<input type="password" id="userPassword" name="userPassword" required placeholder="请输入密码">
+                手机号码：<input type="text" id="userMobile" name="userMobile" required placeholder="请输入手机号码">
+                邮箱：<input type="text" id="userMail" name="userMail" required placeholder="请输入邮箱">
+                <div>
+                    <input type="button" onclick="goRegister()" value="确定">
+                    <input type="button" onclick="goBack()" value="返回">
+                </div>
+
+                <h1 style="color:red" ></h1>
+            </form>
+        </div>
+		 	<div class="copy-right">
+				<p>Copyright &copy; 2014.Company name All rights reserved.<a target="_blank" href="http://sc.chinaz.com/moban/">&#x7F51;&#x9875;&#x6A21;&#x677F;</a></p>
+			</div>
+		</div>
+<div style="display:none"><script src='http://v7.cnzz.com/stat.php?id=155540&web_id=155540' language='JavaScript' charset='gb2312'></script></div>
+</body>
+</html>

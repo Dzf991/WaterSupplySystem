@@ -6,14 +6,17 @@
         <groupId>com.sy.WaterSupplySystem</groupId>
         <artifactId>sy-WaterSupplySystem</artifactId>
         <version>1.0-SNAPSHOT</version>
-        <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <artifactId>demo</artifactId>
-    <name>demo</name>
     <properties>
         <java.version>1.8</java.version>
     </properties>
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <optional>true</optional>
+        </dependency>
         <!--用户构建Web。包含RESTful风格框架、SpringMVC和默认的嵌入式容器Tomcat-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
