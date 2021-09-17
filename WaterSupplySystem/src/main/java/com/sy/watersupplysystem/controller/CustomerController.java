@@ -16,10 +16,11 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
-    @GetMapping(value = "/goCustomerMenu")
+    @GetMapping(value = "/goCustomerList")
     public String goCustomerMenu(){
-        return "CustomerMenu";
+        return "customer/CustomerList";
     }
+
     @GetMapping(value = "/getCustomerList")
     @ResponseBody
     public Object getCustomerList(){

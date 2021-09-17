@@ -27,6 +27,13 @@ public class AccountController {
     public String goRegister(){
         return "register";
     }
+
+    @GetMapping(value = "/index")
+    public String goLogin(){
+        return "index";
+    }
+
+
     @ResponseBody
     @PostMapping(value = "/account/register")
     public Object register(Account account){

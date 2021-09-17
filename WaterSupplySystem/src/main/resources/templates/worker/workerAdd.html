@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>学生后台管理系统</title>
+
+<!--Bootstrap固定框架-->
+<link rel='stylesheet' th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.css}">
+<link rel='stylesheet' th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap-theme.css}">
+<!--图标库-->
+<link rel='stylesheet' th:href='@{/css/material-design-iconic-font.min.css}'>
+<!--核心样式-->
+<link rel="stylesheet" th:href="@{/css/style.css}">
+  <script th:src="@{/js/DateFormat.js}"></script>
+  <script th:src="@{/js/Format.js}"></script>
+  <script th:src="@{/js/SimpleDateFormat.js}"></script>
+<script th:src="@{/webjars/jquery/3.3.1/jquery.js}"></script>
+</head>
+<script th:inline="javascript">
+
+  $().ready(function () {
+
+    $("#addBtn").click(function () {
+      $.ajax({
+        url : "/student/addStudent",
+        type : "post",
+        data : {
+          sid : $("#sid").val(),
+          no : $("#no").val(),
+          name : $("#name").val(),
+          birthday : $("#birthday").val(),
+          hobby : $("#hobby").val()
+        },
+        dataType : "json",
+        success : function (resp) {
+          if (resp === 200){
+            alert("添加成功！");
+            window.location = "/student/goStuMenu";
+          }else {
+            alert("添加失败");
+          }
+        }
+      })
+    })
+  })
+
+
+
+</script>
+<body>
+
+<div id="viewport">
+
+  <!-- Sidebar -->
+  <div id="sidebar">
+    <div id="side" th:include="com/side :: side"></div>
+  </div>
+  
+  <!-- Content -->
+  <div id="content">
+    <div id="head" th:include="com/head :: head"></div>
+
+
+
+    <div class="container-fluid">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <table class="table table-hover table-striped" >
+              <tbody id="stuTable">
+              </tbody>
+            </table>
+            <form class="form-horizontal" >
+              <div class="form-group">
+                <input type="hidden" id="sid">
+                <div class="col-sm-1">
+                  学号:
+                </div>
+                <div class="col-sm-3">
+                  <input type="text" class="form-control"  id="no" name="no" />
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-1">
+                  姓名:
+                </div>
+                <div class="col-sm-3">
+                  <input type="text" class="form-control"  id="name" name="name" />
+                </div>
+              </div>
+              <div class="form-group">
+                <div class ="col-md-1">
+                  生日:
+                </div>
+                <div class="col-sm-3">
+                  <input type="date" class="form-control" id="birthday" name="birthday" />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="col-md-1">
+                  爱好:
+                </div>
+                <div class="col-sm-3">
+                  <select id="hobby" name="hobby"  class="form-control">
+                    <option value="足球">足球</option>
+                    <option value="篮球">篮球</option>
+                    <option value="游泳">游泳</option>
+                    <option value="网球">网球</option>
+                    <option value="乒乓球">乒乓球</option>
+                    <option value="其它">其它</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                  <button type="button" id="addBtn" class="btn btn-default">提交</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

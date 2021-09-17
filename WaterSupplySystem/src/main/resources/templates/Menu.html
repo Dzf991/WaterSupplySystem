@@ -24,41 +24,18 @@
 
   <!-- Sidebar -->
   <div id="sidebar">
-    <header>
-      <a href="#">校园送水系统</a>
-    </header>
-    <ul class="nav">
-      <li>
-          <a href="/customer/goCustomerMenu">
-          <i class="zmdi zmdi-view-dashboard" ></i> 客户管理
-        </a>
-      </li>
-      <li>
-        <a>
-          <i class="zmdi zmdi-link"></i> 员工管理
-        </a>
-      </li>
-      <li>
-        <a>
-          <i class="zmdi zmdi-widgets"></i> 送水历史管理
-        </a>
-
-    </ul>
+   <div id="side" th:include="com/side :: side"></div>
   </div>
-  
+
+
   <!-- Content -->
   <div id="content">
-    <nav class="navbar navbar-default">
-      <div class="container-fluid" >
-        <ul class="nav navbar-nav navbar-right">
-          <li>
-            <a href="#"><i class="zmdi zmdi-notifications text-danger"></i>
-            </a>
-          </li>
-          <li><a href="#">测试用户123</a></li>
-        </ul>
-      </div>
-    </nav>
+
+    <div id="head" th:include="com/head :: head"></div>
+
+
+
+
     <div class="container-fluid">
       <div class="container-fluid">
         <div class="row">

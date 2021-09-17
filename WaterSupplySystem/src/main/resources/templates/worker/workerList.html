@@ -8,7 +8,7 @@
 <link rel='stylesheet' th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.css}">
 <link rel='stylesheet' th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap-theme.css}">
 <!--图标库-->
-<link rel='stylesheet' th:href='@{/css/material-design-iconic-font.min.css}'>
+<link rel='stylesheet' th:href="@{/css/material-design-iconic-font.min.css}">
 <!--核心样式-->
 <link rel="stylesheet" th:href="@{/css/style.css}">
 <script th:src="@{/webjars/jquery/3.3.1/jquery.js}"></script>
@@ -16,7 +16,7 @@
 <script>
 
   $().ready(function () {
-    getCustomerList();
+    getWorkerList();
   });
 
 
@@ -24,38 +24,38 @@
 
 
   /**
-   * 获取客户列表
+   * 获取员工列表
    */
-  function getCustomerList() {
+  function getWorkerList() {
     $.ajax({
-      url : "getCustomerList",
+      url : "getWorkerList",
       type : "get",
       dataType : "json",
       success : function (resp) {
           if(resp.code === 200){
-            $("#custTable").empty();
-            $("#custTable").append(
+            $("#workerTable").empty();
+            $("#workerTable").append(
                     "<tr>\n" +
-                    "<td>客户编号</td>\n" +
-                    "<td>客户名称</td>\n" +
-                    "<td>客户地址</td>\n" +
-                    "<td>联系方式</td>\n" +
-                    "<td>水票数量</td>\n" +
+                    "<td>员工编号</td>\n" +
+                    "<td>员工名称</td>\n" +
+                    "<td>员工工资</td>\n" +
+                    "<td>员工提成</td>\n" +
+                    "<td>员工图片</td>\n" +
                     "<td>操作</td>\n" +
                     "</tr>\n"
             );
 
-            $.each(resp.resultData,function (i,cust){
+            $.each(resp.resultData,function (i,worker){
 
-              $("#custTable").append("<tr>\n" +
-                      "<td>"+cust.cid+"</td>\n" +
-                      "<td>"+cust.custName+"</td>\n" +
-                      "<td>"+cust.custAddress+"</td>\n" +
-                      "<td>"+cust.custMobile+"</td>\n" +
-                      "<td>"+cust.custTicket+"</td>\n" +
+              $("#workerTable").append("<tr>\n" +
+                      "<td>"+worker.wid+"</td>\n" +
+                      "<td>"+worker.workerName+"</td>\n" +
+                      "<td>"+worker.workerSalary+"</td>\n" +
+                      "<td>"+worker.workerTicheng+"</td>\n" +
+                      "<td>"+worker.workerimage+"</td>\n" +
                       "<td>\n" +
-                      "<button class='btn btn-default' onclick='goUpdate("+cust.cid+")'>修改</button>\n" +
-                      "<button class='btn btn-danger' onclick='delBtn("+cust.cid+")'>删除</button>\n" +
+                      "<button class='btn btn-default' onclick='goUpdate("+worker.wid+")'>修改</button>\n" +
+                      "<button class='btn btn-danger' onclick='delBtn("+worker.wid+")'>删除</button>\n" +
                       "</td>\n" +
                       "</tr>");
             })
@@ -74,41 +74,16 @@
 
   <!-- Sidebar -->
   <div id="sidebar">
-    <header>
-      <a href="#">校园送水系统</a>
-    </header>
-    <ul class="nav">
-      <li>
-        <a onclick="getCustomerList()">
-          <i class="zmdi zmdi-view-dashboard"></i> 客户管理
-        </a>
-      </li>
-      <li>
-        <a>
-          <i class="zmdi zmdi-link"></i> 员工管理
-        </a>
-      </li>
-      <li>
-        <a>
-          <i class="zmdi zmdi-widgets"></i> 送水历史管理
-        </a>
+    <div id="side" th:include="com/side :: side"></div>
 
-    </ul>
   </div>
   
   <!-- Content -->
   <div id="content">
-    <nav class="navbar navbar-default">
-      <div class="container-fluid" >
-        <ul class="nav navbar-nav navbar-right">
-          <li>
-            <a href="#"><i class="zmdi zmdi-notifications text-danger"></i>
-            </a>
-          </li>
-          <li><a href="#">测试用户123</a></li>
-        </ul>
-      </div>
-    </nav>
+    <div id="head" th:include="com/head :: head"></div>
+
+
+
     <div class="container-fluid">
       <div class="container-fluid">
         <div class="row">
@@ -134,7 +109,7 @@
 
 
             <table class="table table-hover table-striped" >
-              <tbody id="custTable">
+              <tbody id="workerTable">
 
               </tbody>
             </table>
