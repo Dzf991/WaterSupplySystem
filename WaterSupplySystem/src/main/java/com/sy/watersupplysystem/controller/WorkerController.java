@@ -16,10 +16,18 @@ public class WorkerController {
     @Autowired
     private WorkerService workerService;
 
+
+    @GetMapping(value = "/goAdd")
+    public String goAdd(){
+        return "worker/workerAdd";
+    }
+
+
     @GetMapping(value = "/goWorkerList")
     public String goWorkerList(){
         return "worker/workerList";
     }
+
 
     @GetMapping(value = "/getWorkerList")
     @ResponseBody

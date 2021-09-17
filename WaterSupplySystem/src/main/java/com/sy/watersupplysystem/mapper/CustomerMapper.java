@@ -6,4 +6,8 @@ import java.util.List;
 
 public interface CustomerMapper {
     List<Customer> getCustomerList();
+
+    int addCustomer(Customer customer);
+
+    Customer getCustomerById(Integer cid);
 }

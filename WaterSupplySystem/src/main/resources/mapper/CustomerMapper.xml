@@ -14,7 +14,17 @@
         from tb_customer
     </select>
 
+    <insert id="addCustomer" parameterType="Customer">
+        insert into tb_customer
+        (cust_name,cust_mobile,cust_address,cust_ticket)
+        values
+        (#{custName},#{custMobile},#{custAddress},#{custTicket})
+    </insert>
 
-
+    <select id="getCustomerById" parameterType="Customer" resultMap="AccountResultMap">
+        select cid,cust_name,cust_mobile,cust_address,cust_ticket
+        from tb_customer
+        where cid = #{cid}
+    </select>
 
 </mapper>

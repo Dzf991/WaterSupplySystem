@@ -19,6 +19,14 @@ spring:
     suffix: .html
     cache: false
 
+  servlet:
+    multipart:
+      max-request-size: 100MB
+      max-file-size: 100MB
+  resources:
+    static-locations: classpath:/static,classpath:/public,classpath:/resources,classpath:/META-INF/resource,file:${location}
+
+location: D:/worker/picture/
 
 mybatis:
   type-aliases-package: com.sy.watersupplysystem.entities

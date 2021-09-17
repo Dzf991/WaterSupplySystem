@@ -27,4 +27,26 @@ public class CustomerServiceImpl implements CustomerService {
             return pageVo;
         }
     }
+
+    @Override
+    public PageVo addCustomer(Customer customer) {
+
+        PageVo pageVo = new PageVo();
+        int result = customerMapper.addCustomer(customer);
+        if (result > 0 ){
+            pageVo.setCode(200);
+            return pageVo;
+        }else {
+            pageVo.setCode(400);
+            return pageVo;
+        }
+
+    }
+
+    @Override
+    public Customer getCustomerById(Integer cid) {
+        Customer customer = customerMapper.getCustomerById(cid);
+
+        return customer;
+    }
 }

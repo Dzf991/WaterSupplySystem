@@ -13,10 +13,20 @@
 <link rel="stylesheet" th:href="@{/css/style.css}">
 <script th:src="@{/webjars/jquery/3.3.1/jquery.js}"></script>
 </head>
+<style>
+  img{
+    height: 100px;
+  }
+  .left{
+    text-align: left;
+  }
+
+</style>
 <script>
 
   $().ready(function () {
     getWorkerList();
+
   });
 
 
@@ -46,14 +56,14 @@
             );
 
             $.each(resp.resultData,function (i,worker){
-
+              var imagePath = "/" + worker.workerImage;
               $("#workerTable").append("<tr>\n" +
-                      "<td>"+worker.wid+"</td>\n" +
-                      "<td>"+worker.workerName+"</td>\n" +
-                      "<td>"+worker.workerSalary+"</td>\n" +
-                      "<td>"+worker.workerTicheng+"</td>\n" +
-                      "<td>"+worker.workerimage+"</td>\n" +
-                      "<td>\n" +
+                      "<td style='line-height: 100px'>"+worker.wid+"</td>\n" +
+                      "<td style='line-height: 100px'>"+worker.workerName+"</td>\n" +
+                      "<td style='line-height: 100px'>"+worker.workerSalary+"</td>\n" +
+                      "<td style='line-height: 100px'>"+worker.workerTicheng+"</td>\n" +
+                      "<td><img src="+imagePath+"></td>\n" +
+                      "<td style='line-height: 100px'>\n" +
                       "<button class='btn btn-default' onclick='goUpdate("+worker.wid+")'>修改</button>\n" +
                       "<button class='btn btn-danger' onclick='delBtn("+worker.wid+")'>删除</button>\n" +
                       "</td>\n" +
@@ -65,7 +75,12 @@
       }
     })
   }
-
+  /**
+   * 跳转到添加页面
+   */
+  function goAdd() {
+    window.location = "goAdd";
+  }
 
 </script>
 <body>
@@ -89,24 +104,19 @@
         <div class="row">
 
           <div class="col-md-12">
+            <div class="col-md-9" style="padding: 0">
+            <button  class="btn btn-primary" onclick="goAdd()">添加员工</button>
 
-            <div class="col-md-4">
-              <button  class="btn btn-primary" onclick="goAdd()">添加客户</button>
             </div>
 
-            <div class="col-md-8 inline">
-
-
+            <div class="col-md-3">
               <form class="form-inline">
                 <div class="form-group">
-                  <input type="text" disabled="" class="form-control" id="name" name="name" placeholder="请输入"/>
+                  <input type="text" class="form-control" id="name" name="name" placeholder="请输入"/>
+                  <button type="button" id="serchBtn" class="btn btn-default">搜索</button>
                 </div>
-                <button type="button" id="serchBtn" class="btn btn-default">搜索</button>
               </form>
             </div>
-
-
-
 
             <table class="table table-hover table-striped" >
               <tbody id="workerTable">
