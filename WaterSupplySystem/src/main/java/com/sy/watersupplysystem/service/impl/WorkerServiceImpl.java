@@ -14,11 +14,88 @@ public class WorkerServiceImpl implements WorkerService {
     @Resource
     private WorkerMapper workerMapper;
     @Override
-    public PageVo<Worker> getWorkerList() {
+    public PageVo<Worker> getWorkerList(Integer currentPage) {
         PageVo<Worker> pageVo = new PageVo<>();
-        List<Worker> workers = workerMapper.getWorkerList();
+
+        int totalNum = workerMapper.getWorkerTotal();
+        pageVo.setTotalNum(totalNum);
+        pageVo.setStartIndex((currentPage-1) * pageVo.getPageSize());
+        pageVo.setCurrentPage(currentPage);
+        pageVo.setTotalPage((totalNum + pageVo.getPageSize() - 1) / pageVo.getPageSize());
+        List<Worker> workers = workerMapper.getWorkerList(pageVo);
+
         pageVo.setResultData(workers);
         pageVo.setCode(200);
         return pageVo;
     }
+
+    @Override
+    public PageVo addWorker(Worker worker) {
+       int result = workerMapper.addWorker(worker);
+        PageVo pageVo = new PageVo();
+        if (result > 0 ){
+            pageVo.setCode(200);
+        }else {
+            pageVo.setCode(400);
+        }
+        return pageVo;
+    }
+
+    @Override
+    public Worker getWorkerById(Integer wid) {
+        Worker worker = workerMapper.getWorkerById(wid);
+        return worker;
+    }
+
+    @Override
+    public PageVo updateWorker(Worker worker) {
+        int result = workerMapper.updateWorker(worker);
+        PageVo pageVo = new PageVo();
+        if (result > 0 ){
+            pageVo.setCode(200);
+        }else {
+            pageVo.setCode(400);
+        }
+        return pageVo;
+    }
+
+    @Override
+    public PageVo delWorker(Integer wid) {
+        int result = workerMapper.delWorker(wid);
+        PageVo pageVo = new PageVo();
+        if (result > 0 ){
+            pageVo.setCode(200);
+        }else {
+            pageVo.setCode(400);
+        }
+        return pageVo;
+    }
+
+    @Override
+    public void updateWorkerSalary(Integer wid,String workerSalary) {
+       int result = workerMapper.updateWorkerSalary(wid,workerSalary);
+    }
+
+    @Override
+    public PageVo<Worker> notSendWorker(Integer currentPage) {
+        PageVo<Worker> pageVo = new PageVo<>();
+
+        int totalNum = workerMapper.notSendWorkerTotal();
+        pageVo.setTotalNum(totalNum);
+        pageVo.setStartIndex((currentPage-1) * pageVo.getPageSize());
+        pageVo.setCurrentPage(currentPage);
+        pageVo.setTotalPage((totalNum + pageVo.getPageSize() - 1) / pageVo.getPageSize());
+        List<Worker> workers = workerMapper.notSendWorker(pageVo);
+
+        pageVo.setResultData(workers);
+        pageVo.setCode(200);
+        return pageVo;
+    }
+
+    @Override
+    public List<Worker> getWorkers() {
+        return workerMapper.getWorkers();
+
+    }
+
 }

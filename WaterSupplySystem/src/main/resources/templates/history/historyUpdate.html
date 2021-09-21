@@ -15,44 +15,29 @@
 </head>
 <script th:inline="javascript">
 
-  $().ready(function () {
-
-    $("#addBtn").click(function () {
-      var formDate = new FormData($("#workerInfo")[0]);
-      $.ajax({
-        url : "/worker/addWorker",
-        type : "post",
-        data : formDate,
-        dataType : "json",
-        async:false,
-        cache:false,
-        contentType:false,
-        processData:false,
-        success : function (resp) {
-          if (resp.code === 200){
-            alert("添加成功！");
-            window.location = "goWorkerList";
-          }else {
-            alert("添加失败");
-          }
-        }
-      })
-    })
-
-
-    $("#image").on("change",function () {
-      var file = this.files[0];
-      if(window.FileReader){
-        var reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onloadend = function (e) {
-          $("#preview").attr("src",e.target.result);
+  function saveHistory(currentPage) {
+    $.ajax({
+      url: "/history/updateHistory",
+      type: "post",
+      data: {
+        "hid" : $("#hid").val(),
+        "workerId" : $("#wid").val(),
+        "custId" : $("#cid").val(),
+        "sendWaterTime" : $("#sendWaterTime").val(),
+        "sendWaterCount" : $("#sendWaterCount").val()
+      },
+      dataType: "json",
+      success: function (resp) {
+        if (resp.code === 200) {
+          alert("修改成功！");
+          window.location = "goHistoryList?currentPage"+currentPage;
+        } else {
+          alert("修改失败");
         }
       }
     })
 
-  });
-
+  }
   function goBack() {
     window.history.back();
   }
@@ -82,49 +67,51 @@
             </table>
             <form class="form-horizontal" id="workerInfo" enctype="multipart/form-data">
               <div class="form-group">
+                <input type="hidden" id="hid" th:value="${history.getHid()}">
                 <div class="col-sm-1" >
                   员工名称:
                 </div>
                 <div class="col-sm-3">
-                  <input type="text" class="form-control"  id="no" name="workerName" />
+                  <select id="wid" name="wid" class="form-control" >
+                    <option value=""></option>
+                    <option th:each="w : ${worker}" th:value="${w.getWid()}" th:text="${w.getWorkerName()}"
+                    th:selected="${w.getWid()} == ${history.getWorkerId()}"
+                    ></option>
+                  </select>
                 </div>
               </div>
               <div class="form-group">
                 <div class="col-sm-1">
-                  员工底薪:
+                  送水时间:
                 </div>
                 <div class="col-sm-3">
-                  <input type="text" class="form-control" name="workerSalary" id="workerSalary" />
+                  <input type="date" class="form-control" th:value="${history.getSendWaterTime()}" name="sendWaterTime" id="sendWaterTime" />
                 </div>
               </div>
               <div class="form-group">
                 <div class ="col-md-1">
-                  员工提成:
+                  客户姓名:
                 </div>
                 <div class="col-sm-3">
-                  <input type="text" class="form-control"  id="ticheng" name="workerTicheng" />
-                </div>
-
-              </div>
-              <div class="form-group">
-                <div class ="col-md-1">
-                  员工照片:
-                </div>
-                <div class="col-sm-3">
-                  <input type="file" class="form-search" name="image" id="image" />
+                  <select id="cid" name="cid" class="form-control">
+                    <option value=""></option>
+                    <option th:each="c : ${customer}" th:value="${c.getCid()}" th:text="${c.getCustName()}"
+                            th:selected="${c.getCid()} == ${history.getCustId()}"
+                    ></option>
+                  </select>
                 </div>
               </div>
               <div class="form-group">
                 <div class ="col-md-1">
-                  照片预览:
+                  送水数量:
                 </div>
                 <div class="col-sm-3">
-                  <img id="preview">
+                  <input type="text" class="form-control" th:value="${history.getSendWaterCount()}" name="sendWaterCount" id="sendWaterCount"/>
                 </div>
               </div>
               <div class="form-group">
               <div class ="col-md-1">
-                <input type="button" class="btn btn-default form-control"  id="addBtn" value="提交"/>
+                <input type="button" class="btn btn-primary form-control"  th:onclick="'javascript:saveHistory('+${currentPage}+')'" value="提交"/>
               </div>
               <div class ="col-md-1">
                 <input type="button" class="btn btn-default form-control"  onclick="goBack()" value="返回" />

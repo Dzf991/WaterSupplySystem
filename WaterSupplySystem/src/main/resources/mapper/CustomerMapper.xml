@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sy.watersupplysystem.mapper.CustomerMapper">
-    <resultMap id="AccountResultMap" type="com.sy.watersupplysystem.entities.Customer">
+    <resultMap id="CustomerResultMap" type="com.sy.watersupplysystem.entities.Customer">
         <id column="cid" jdbcType="INTEGER" property="cid"/>
         <result column="cust_name" jdbcType="VARCHAR" property="custName"/>
         <result column="cust_mobile" jdbcType="VARCHAR" property="custMobile"/>
@@ -9,9 +9,14 @@
         <result column="cust_ticket" jdbcType="VARCHAR" property="custTicket"/>
     </resultMap>
 
-    <select id="getCustomerList" resultMap="AccountResultMap">
+    <select id="getCustomerTotal" resultType="int">
+        select count(*) as total from tb_customer
+    </select>
+
+    <select id="getCustomerList" parameterType="PageVo" resultMap="CustomerResultMap">
         select cid,cust_name,cust_mobile,cust_address,cust_ticket
         from tb_customer
+        limit #{startIndex},#{pageSize}
     </select>
 
     <insert id="addCustomer" parameterType="Customer">
@@ -21,10 +26,29 @@
         (#{custName},#{custMobile},#{custAddress},#{custTicket})
     </insert>
 
-    <select id="getCustomerById" parameterType="Customer" resultMap="AccountResultMap">
+    <select id="getCustomerById" parameterType="Customer" resultMap="CustomerResultMap">
         select cid,cust_name,cust_mobile,cust_address,cust_ticket
         from tb_customer
         where cid = #{cid}
     </select>
+    <update id="updateCustomer" parameterType="Customer">
+        update tb_customer
+        set cust_name = #{custName},
+            cust_mobile = #{custMobile},
+            cust_address= #{custAddress},
+            cust_ticket = #{custTicket}
+        where cid = #{cid}
 
+
+    </update>
+
+    <delete id="delCustomer" parameterType="int">
+        delete from tb_customer
+        where cid = #{cid}
+    </delete>
+
+    <select id="getCustomers" resultMap="CustomerResultMap">
+        select cid,cust_name
+        from tb_customer
+    </select>
 </mapper>

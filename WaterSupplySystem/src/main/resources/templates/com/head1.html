@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <!--Bootstrap固定框架-->
+    <link rel='stylesheet' th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.css}">
+    <link rel='stylesheet' th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap-theme.css}">
+    <!--图标库-->
+    <link rel='stylesheet' th:href='@{/css/material-design-iconic-font.min.css}'>
+    <!--核心样式-->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <div th:fragment="head">
+        <nav class="navbar navbar-default">
+            <div class="container-fluid" >
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <div class="btn-group">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+<!--                            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>-->
+<!--                            <span th:text="' ' + ${session.account.getUserName()}"></span>-->
+                            下拉
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                            <li><a href="#">Action</a></li>
+                            <li><a href="#">Another action</a></li>
+                            <li><a href="#">Something else here</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">Separated link</a></li>
+                        </ul>
+                        </div>
+                    </li>
+                </ul>
+
+            </div>
+        </nav>
+    </div>
+</head>
+
+</html>

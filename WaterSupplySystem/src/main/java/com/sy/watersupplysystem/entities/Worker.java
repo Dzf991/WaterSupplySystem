@@ -3,7 +3,7 @@ package com.sy.watersupplysystem.entities;
 public class Worker {
     private Integer wid;
     private String workerName;
-    private String workerSalary ;
+    private String workerSalary;
     private String workerTicheng;
     private String workerImage;
 

@@ -15,17 +15,22 @@ public class CustomerServiceImpl implements CustomerService {
     private CustomerMapper customerMapper;
 
     @Override
-    public PageVo<Customer> getCustomerList() {
+    public PageVo<Customer> getCustomerList(Integer currentPage) {
         PageVo<Customer> pageVo = new PageVo<>();
-        List<Customer> customers = customerMapper.getCustomerList();
+        pageVo.setCurrentPage(currentPage);
+
+        int totalNum = customerMapper.getCustomerTotal();
+        pageVo.setTotalNum(totalNum);
+        pageVo.setTotalPage((totalNum + pageVo.getPageSize() - 1) / pageVo.getPageSize() );
+        pageVo.setStartIndex((currentPage-1) * pageVo.getPageSize());
+        List<Customer> customers = customerMapper.getCustomerList(pageVo);
         if (customers != null){
             pageVo.setCode(200);
             pageVo.setResultData(customers);
-            return pageVo;
         }else {
             pageVo.setCode(404);
-            return pageVo;
         }
+        return pageVo;
     }
 
     @Override
@@ -35,11 +40,10 @@ public class CustomerServiceImpl implements CustomerService {
         int result = customerMapper.addCustomer(customer);
         if (result > 0 ){
             pageVo.setCode(200);
-            return pageVo;
         }else {
             pageVo.setCode(400);
-            return pageVo;
         }
+        return pageVo;
 
     }
 
@@ -48,5 +52,34 @@ public class CustomerServiceImpl implements CustomerService {
         Customer customer = customerMapper.getCustomerById(cid);
 
         return customer;
+    }
+
+    @Override
+    public PageVo updateCustomer(Customer customer) {
+        PageVo pageVo = new PageVo();
+        int result = customerMapper.updateCustomer(customer);
+        if (result > 0 ){
+            pageVo.setCode(200);
+        }else {
+            pageVo.setCode(400);
+        }
+        return pageVo;
+    }
+
+    @Override
+    public PageVo delCustomer(Integer cid) {
+        PageVo pageVo = new PageVo();
+        int result = customerMapper.delCustomer(cid);
+        if (result > 0 ){
+            pageVo.setCode(200);
+        }else {
+            pageVo.setCode(400);
+        }
+        return pageVo;
+    }
+
+    @Override
+    public List<Customer> getCustomers() {
+        return customerMapper.getCustomers();
     }
 }

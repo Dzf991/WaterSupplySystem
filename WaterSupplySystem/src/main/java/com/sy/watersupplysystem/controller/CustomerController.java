@@ -19,36 +19,53 @@ public class CustomerController {
     private CustomerService customerService;
 
     @GetMapping(value = "/goCustomerList")
-    public String goCustomerMenu(){
-        return "customer/CustomerList";
+    public String goCustomerList(Model model, Integer currentPage){
+        model.addAttribute("currentPage",currentPage);
+        return "customer/customerList";
     }
 
 
 
-    @GetMapping(value = "/goAdd")
+    @GetMapping(value = "/goCustomerAdd")
     public String goCustomerAdd(){
         return "customer/customerAdd";
     }
 
-    @GetMapping(value = "/goUpdate")
-    public String goCustomerUpdate(Model model, Integer cid){
+    @GetMapping(value = "/goCustomerUpdate")
+    public String goCustomerUpdate(Model model, Integer cid, Integer currentPage){
 
         Customer customer = customerService.getCustomerById(cid);
         model.addAttribute("customer",customer);
-        return "customer/customerAdd";
+        model.addAttribute("currentPage",currentPage);
+        return "customer/customerUpdate";
     }
 
     @GetMapping(value = "/getCustomerList")
     @ResponseBody
-    public Object getCustomerList(){
-        PageVo<Customer> customers = customerService.getCustomerList();
-        return customers;
+    public Object getCustomerList(Model model, Integer currentPage){
+        PageVo<Customer> customerPageVo = customerService.getCustomerList(currentPage);
+        model.addAttribute("pageVo",customerPageVo);
+        return customerPageVo;
     }
 
     @PostMapping(value = "/addCustomer")
     @ResponseBody
     public Object addCustomer(Customer customer){
        PageVo pageVo = customerService.addCustomer(customer);
+        return pageVo;
+    }
+
+    @PostMapping(value = "/updateCustomer")
+    @ResponseBody
+    public Object updateCustomer(Customer customer){
+        PageVo pageVo = customerService.updateCustomer(customer);
+        return pageVo;
+    }
+    @GetMapping(value = "/delCustomer")
+    @ResponseBody
+    public Object delCustomer(Integer cid){
+        PageVo pageVo = customerService.delCustomer(cid);
+
         return pageVo;
     }
 }

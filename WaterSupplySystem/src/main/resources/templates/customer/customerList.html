@@ -1,0 +1,203 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>校园送水后台管理系统</title>
+<script th:src="@{/webjars/jquery/3.3.1/jquery.js}"></script>
+<!--Bootstrap固定框架-->
+<link rel='stylesheet' th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.css}">
+  <link rel='stylesheet' th:href="@{/webjars/bootstrap/3.3.7/js/bootstrap.js}">
+<link rel='stylesheet' th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap-theme.css}">
+<!--图标库-->
+<link rel='stylesheet' th:href="@{/css/material-design-iconic-font.min.css}">
+<!--核心样式-->
+<link rel="stylesheet" th:href="@{/css/style.css}">
+<script th:src="@{/js/bootstrap-paginator.js}"></script>
+
+</head>
+<style>
+  .div_right{
+    float: right;
+  }
+</style>
+<script th:inline="javascript">
+
+  $().ready(function () {
+    let pageNo = /*[[${currentPage}]]*/ 1;
+    getCustomerList(pageNo);
+  });
+
+
+
+
+
+  /**
+   * 获取客户列表
+   */
+  function getCustomerList(currentPage) {
+    $.ajax({
+      url : "getCustomerList",
+      type : "get",
+      data:{
+        "currentPage" : currentPage
+      },
+      dataType : "json",
+      success : function (resp) {
+          if(resp.code === 200){
+            $("#custTable").empty();
+            $("#custTable").append(
+                    "<tr>\n" +
+                    "<th>客户编号</th>\n" +
+                    "<th>客户名称</th>\n" +
+                    "<th>客户地址</th>\n" +
+                    "<th>联系方式</th>\n" +
+                    "<th>水票数量</th>\n" +
+                    "<th>操作</th>\n" +
+                    "</tr>\n"
+            );
+
+            $.each(resp.resultData,function (i,cust){
+
+              $("#custTable").append("<tr>\n" +
+                      "<td>"+cust.cid+"</td>\n" +
+                      "<td>"+cust.custName+"</td>\n" +
+                      "<td>"+cust.custAddress+"</td>\n" +
+                      "<td>"+cust.custMobile+"</td>\n" +
+                      "<td>"+cust.custTicket+"</td>\n" +
+                      "<td>\n" +
+                      "<button class='btn btn-warning' onclick='goUpdate("+cust.cid+","+resp.currentPage+")'>修改</button>\n" +
+                      "<button class='btn btn-danger' onclick='goDel("+cust.cid+","+resp.currentPage+")'>删除</button>\n" +
+                      "</td>\n" +
+                      "</tr>");
+            })
+            $("#paging").empty();
+            $("#paging").append("<span>当前第"+resp.currentPage+"页,共"+resp.totalPage+"页。</span>\n" +
+                    "                <span>一共"+resp.totalNum+"条记录</span>")
+          }else {
+            alert("客户为空！")
+          }
+        var element = $("#pageBtn");
+        var options = {
+          bootstrapMajorVersion: 3,
+          currentPage: currentPage, // 当前页数
+          //numberOfPages: 5, // 显示按钮的数量
+          totalPages: resp.totalPage, // 总页数
+          itemTexts: function (type, page, current) {
+            switch (type) {
+              case "first":
+                return "首页";
+              case "prev":
+                return "上一页";
+              case "next":
+                return "下一页";
+              case "last":
+                return "末页";
+              case "page":
+                return page;
+            }
+          },
+          // 点击事件，用于通过Ajax来刷新整个list列表
+          onPageClicked: function (event, originalEvent, type, page) {
+            getCustomerList(page,5);
+          }
+        };
+        element.bootstrapPaginator(options);
+      }
+    })
+  }
+
+
+  /**
+   * 跳转到添加页面
+   */
+  function goAdd() {
+    window.location = "goCustomerAdd";
+  }
+
+  function goUpdate(cid,currentPage) {
+    window.location = "goCustomerUpdate?currentPage="+currentPage + "&cid="+cid;
+  }
+
+  function goDel(cid,currentPage) {
+    if(confirm("确定要删除该客户？")){
+      $.ajax({
+        url : "delCustomer",
+        type : "get",
+        data : {
+          "cid" : cid
+        },
+        success : function(resp) {
+          if(resp.code === 200){
+            alert("删除成功！");
+            window.location = "goCustomerList?currentPage=" + currentPage;
+          }else {
+            alert("删除失败！");
+          }
+
+        }
+      })
+
+    }
+  }
+</script>
+<body>
+
+<div id="viewport">
+
+  <!-- Sidebar -->
+  <div id="sidebar">
+    <div id="side" th:include="com/side :: side"></div>
+  </div>
+  
+  <!-- Content -->
+  <div id="content">
+    <div id="head" th:include="com/head :: head"></div>
+
+    <div class="container-fluid">
+      <div class="container-fluid">
+        <div class="row">
+
+          <div class="col-md-12">
+
+            <div class="col-md-9" style="padding: 0">
+              <button  class="btn btn-primary" onclick="goAdd()">添加客户</button>
+            </div>
+
+            <div class="col-md-3 inline">
+              <form class="form-inline">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="name" name="name" placeholder="请输入"/>
+                </div>
+                <button type="button" id="serchBtn" class="btn btn-default">
+                  <span class="glyphicon glyphicon-search" aria-label="true"></span>
+                </button>
+              </form>
+            </div>
+
+
+
+
+            <table class="table table-hover table-striped" >
+              <tbody id="custTable">
+
+              </tbody>
+            </table>
+            <!--分页栏-->
+            <div class="div_right">
+                <div id="paging"></div>
+                <nav aria-label="..." style="text-align:center;">
+                  <ul id="pageBtn" class="pagination">
+                  </ul>
+                </nav>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

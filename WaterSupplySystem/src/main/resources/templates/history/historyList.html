@@ -1,0 +1,261 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+  <title>校园送水后台管理系统</title>
+
+  <script th:src="@{/webjars/jquery/3.3.1/jquery.js}"></script>
+  <!--Bootstrap固定框架-->
+  <link rel='stylesheet' th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.css}">
+  <link rel='stylesheet' th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap-theme.css}">
+  <!--图标库-->
+  <link rel='stylesheet' th:href="@{/css/material-design-iconic-font.min.css}">
+  <!--核心样式-->
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <script th:src="@{/js/bootstrap-paginator.js}"></script>
+
+</head>
+<style>
+
+  .div_right{
+    float: right;
+  }
+
+</style>
+<script>
+
+  $().ready(function () {
+    let pageNo = /*[[${currentPage}]]*/ 1;
+    getHistoryList(pageNo);
+
+    $("#checkAll").click(function () {
+      $("input[name=check]").prop("checked",this.checked);
+    });
+
+    $("#HistoryTable").on("click",$("input[name=check]"),function () {
+      $("#checkAll").prop("checked",$("input[name=check]").length === $("input[name=check]:checked").length);
+    })
+  });
+
+
+  /**
+   * 获取员工列表
+   */
+  function getHistoryList(currentPage) {
+    $.ajax({
+      url : "getHistoryList",
+      type : "get",
+      data : {
+        "currentPage" : currentPage,
+        "startDate" : $("#startDate").val(),
+        "endDate" : $("#endDate").val()
+      },
+      dataType : "json",
+      success : function (resp) {
+          if(resp.code === 200){
+            $("#HistoryTable").empty();
+            $.each(resp.resultData,function (i,History){
+
+              $("#HistoryTable").append("<tr>" +
+                      "<td><input type='checkbox' name='check'  value='"+History.hid+"'></td>" +
+                      "<td>"+History.hid+"</td>" +
+                      "<td>"+History.workerName+"</td>" +
+                      "<td>" +History.sendWaterTime+"</td>"+
+                      "<td>"+History.custName+"</td>" +
+                      "<td>"+History.sendWaterCount+"</td>" +
+                      "<td>" +
+                      "<button class='btn btn-warning' onclick='goHistoryUpdate("+History.hid+","+resp.currentPage+")'>修改</button>" +
+                      "<button class='btn btn-danger' onclick='delHistory("+History.hid+","+resp.currentPage+")'>删除</button>" +
+                      "</td>" +
+                      "</tr>");
+            })
+            $("#paging").empty();
+            $("#paging").append("<span>当前第"+resp.currentPage+"页,共"+resp.totalPage+"页。</span>" +
+                    "<span>一共"+resp.totalNum+"条记录</span>")
+          }else {
+            alert("历史为空！")
+          }
+        var element = $("#pageBtn");
+        var options = {
+          bootstrapMajorVersion: 3,
+          currentPage: currentPage, // 当前页数
+          //numberOfPages: 5, // 显示按钮的数量
+          totalPages: resp.totalPage, // 总页数
+          itemTexts: function (type, page, current) {
+            switch (type) {
+              case "first":
+                return "首页";
+              case "prev":
+                return "上一页";
+              case "next":
+                return "下一页";
+              case "last":
+                return "末页";
+              case "page":
+                return page;
+            }
+          },
+          // 点击事件，用于通过Ajax来刷新整个list列表
+          onPageClicked: function (event, originalEvent, type, page) {
+            getHistoryList(page,5);
+          }
+        };
+        element.bootstrapPaginator(options);
+      }
+    })
+  }
+  /**
+   * 跳转到添加页面
+   */
+  function goHistoryAdd() {
+    window.location = "goHistoryAdd";
+  }
+
+  /**
+   * 跳转到修改页面
+   * @param hid
+   * @param currentPage
+   */
+  function goHistoryUpdate(hid,currentPage) {
+    window.location = "goHistoryUpdate?hid="+hid + "&currentPage="+currentPage;
+  }
+
+  /**
+   * 删除历史记录
+   * @param hid
+   * @param currentPage
+   */
+  function delHistory(hid,currentPage) {
+    if(confirm("是否要删除该条记录？")){
+      $.ajax({
+        url : "delHistory",
+        type : "get",
+        data : {
+          "hid" : hid
+        },
+        dataType :　"json",
+        success : function (resp) {
+          if (resp.code ===200) {
+            alert("删除成功！");
+            window.location = "goHistoryList?currentPage="+currentPage;
+          }else {
+            alert("删除失败！");
+          }
+        }
+      })
+    }
+  }
+
+  /**
+   * 按时间查找
+   */
+  function searchHistory() {
+    getHistoryList(1);
+  }
+
+  /**
+   * 批量删除
+   */
+  function delChecked() {
+    let $checked = $("input[name=check]:checked");
+    let hids = [];
+    for (let i = 0; i < $checked.length; i++) {
+      hids.push($checked[i].value);
+    }
+    if ($checked.length === 0){
+      alert("请选择需要删除的数据!");
+    }else {
+      if (confirm("是否删除选中信息？")) {
+        $.ajax({
+          url: "delChecked",
+          data: {
+            "hids": hids
+          },
+          traditional: true,
+          dataType: "json",
+          success: function (resp) {
+            if (resp.code === 200) {
+              alert("删除成功！");
+              window.location = "goHistoryList?currentPage=1";
+            } else {
+              alert("删除失败！");
+            }
+          }
+        })
+      }
+
+    }
+  }
+</script>
+<body>
+
+<div id="viewport">
+
+  <!-- Sidebar -->
+  <div id="sidebar">
+    <div id="side" th:include="com/side :: side"></div>
+
+  </div>
+  
+  <!-- Content -->
+  <div id="content">
+    <div id="head" th:include="com/head :: head"></div>
+
+
+
+    <div class="container-fluid">
+      <div class="container-fluid">
+        <div class="row">
+
+          <div class="col-md-12">
+            <div class="col-md-6" style="padding: 0">
+            <button  class="btn btn-primary" onclick="goHistoryAdd()">添加历史记录</button>
+              <button  class="btn btn-danger" onclick="delChecked()">批量删除</button>
+            </div>
+
+            <div class="col-md-6">
+              <form class="form-inline">
+                <div class="form-group">
+                  <label>开始日期：</label>
+                  <input type="date" class="form-control" id="startDate" name="startDate"/>
+                  <label>结束日期：</label>
+                  <input type="date" class="form-control" id="endDate" name="endDate"/>
+                  <button onclick="searchHistory()" class="btn btn-default">
+                    <span class="glyphicon glyphicon-search"></span>
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <table class="table table-hover table-striped" >
+              <tr>
+              <th><input type='checkbox' id='checkAll'></th>
+              <th>历史编号</th>
+              <th>员工名称</th>
+              <th>送水时间</th>
+              <th>客户姓名</th>
+              <th>送水数量</th>
+              <th>操作</th>
+              </tr>
+              <tbody id="HistoryTable">
+
+              </tbody>
+            </table>
+            <!--分页栏-->
+            <div class="div_right">
+              <div id="paging"></div>
+              <nav aria-label="..." style="text-align:center;">
+                <ul id="pageBtn" class="pagination">
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

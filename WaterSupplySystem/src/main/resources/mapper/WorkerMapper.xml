@@ -9,12 +9,83 @@
         <result column="worker_image" jdbcType="VARCHAR" property="workerImage"/>
     </resultMap>
 
-    <select id="getWorkerList" resultMap="WorkerResultMap">
+    <select id="getWorkerList" parameterType="PageVo" resultMap="WorkerResultMap">
         select wid,worker_name,worker_salary,worker_ticheng,worker_image
         from tb_worker
+        limit #{startIndex},#{pageSize}
     </select>
 
+    <insert id="addWorker" parameterType="Worker" >
+        insert into tb_worker
+        (worker_name,worker_salary,worker_ticheng,worker_image)
+        values
+        (#{workerName},#{workerSalary},#{workerTicheng},#{workerImage})
+    </insert>
+    <select id="getWorkerById" parameterType="int" resultMap="WorkerResultMap">
+        select wid,worker_name,worker_salary,worker_ticheng,worker_image
+        from tb_worker
+        where wid = #{wid}
+    </select>
+    <update id="updateWorker" parameterType="Worker" >
+        update tb_worker
+        set worker_name = #{workerName},
+            worker_salary = #{workerSalary},
+            worker_ticheng = #{workerTicheng},
+            worker_image = #{workerImage}
+        where wid = #{wid}
+    </update>
 
+    <delete id="delWorker" parameterType="int" >
+        delete from tb_worker
+        where wid = #{wid}
+    </delete>
+    <update id="updateWorkerSalary">
+        update tb_worker
+        set worker_salary = #{workerSalary}
+        where wid = #{wid}
+    </update>
 
+    <select id="getWorkerTotal" resultType="int">
+        select count(*) as total from tb_worker
+    </select>
 
+    <select id="notSendWorker" resultMap="WorkerResultMap">
+        SELECT
+            wid,worker_name,worker_salary,worker_ticheng,worker_image
+        FROM
+            tb_worker AS w
+                LEFT JOIN
+            (
+                SELECT
+                    worker_id
+                FROM
+                    tb_history
+            ) AS h
+            ON
+                h.worker_id = w.wid
+        WHERE
+            h.worker_id IS NULL
+    </select>
+    <select id="notSendWorkerTotal" resultType="int">
+        SELECT
+           count(*) as total
+        FROM
+            tb_worker AS w
+                LEFT JOIN
+            (
+                SELECT
+                    worker_id
+                FROM
+                    tb_history
+            ) AS h
+            ON
+                h.worker_id = w.wid
+        WHERE
+            h.worker_id IS NULL
+    </select>
+
+    <select id="getWorkers" resultMap="WorkerResultMap">
+        select wid,worker_name
+        from tb_worker
+    </select>
 </mapper>

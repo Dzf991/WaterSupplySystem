@@ -6,14 +6,14 @@ server:
 
 spring:
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/shouyi?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/shouyi?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT&allowPublicKeyRetrieval=true
     username: root
     type: com.alibaba.druid.pool.DruidDataSource
+    password: root
 
-
-
-
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${location}
   thymeleaf:
     prefix: classpath:/templates/
     suffix: .html
@@ -23,10 +23,12 @@ spring:
     multipart:
       max-request-size: 100MB
       max-file-size: 100MB
-  resources:
-    static-locations: classpath:/static,classpath:/public,classpath:/resources,classpath:/META-INF/resource,file:${location}
 
-location: D:/worker/picture/
+location: D:/worker/picture
+
+
+
+
 
 mybatis:
   type-aliases-package: com.sy.watersupplysystem.entities

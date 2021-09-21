@@ -13,39 +13,44 @@
 <link rel="stylesheet" th:href="@{/css/style.css}">
 <script th:src="@{/webjars/jquery/3.3.1/jquery.js}"></script>
 </head>
-<style>
-  .center{
-    text-align: center;
-  }
-</style>
 <script th:inline="javascript">
 
   $().ready(function () {
 
+    $("#image").on("change",function () {
+      var file = this.files[0];
+      if(window.FileReader){
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = function (e) {
+          $("#preview").attr("src",e.target.result);
+        }
+      }
+    })
+
   });
-  function saveCustomer(pageNo) {
+
+  function saveWorker(currentPage) {
+    var formDate = new FormData($("#workerInfo")[0]);
     $.ajax({
-      url : "/customer/updateCustomer",
+      url : "/worker/updateWorker",
       type : "post",
-      data : {
-        cid : $("#cid").val(),
-        custName : $("#name").val(),
-        custAddress : $("#address").val(),
-        custMobile : $("#mobile").val(),
-        custTicket : $("#ticket").val()
-      },
+      data : formDate,
       dataType : "json",
+      async:false,
+      cache:false,
+      contentType:false,
+      processData:false,
       success : function (resp) {
         if (resp.code === 200){
           alert("修改成功！");
-          window.location = "goCustomerList?currentPage="+pageNo;
+          window.location = "goWorkerList?currentPage="+currentPage;
         }else {
           alert("修改失败");
         }
       }
     })
   }
-
   function goBack() {
     window.history.back();
   }
@@ -67,57 +72,64 @@
 
 
     <div class="container-fluid">
-      <div class="container-fluid center">
+      <div class="container-fluid">
         <div class="row">
           <div class="col-md-12">
             <table class="table table-hover table-striped" >
               <tbody id="stuTable">
               </tbody>
             </table>
-            <form class="form-horizontal" >
+            <form class="form-horizontal" id="workerInfo" enctype="multipart/form-data">
+              <input type="hidden" name="wid" th:value="${worker.getWid()}"/>
               <div class="form-group">
-                <input type="hidden" id="cid" th:value="${customer.getCid()}" />
                 <div class="col-sm-1" >
-                  客户名称:
+                  员工名称:
                 </div>
                 <div class="col-sm-3">
-                  <input type="text" class="form-control" th:value="${customer.getCustName()}"  id="name" />
+                  <input type="text" class="form-control" th:value="${worker.getWorkerName()}" id="no" name="workerName" />
                 </div>
               </div>
               <div class="form-group">
                 <div class="col-sm-1">
-                  联系方式:
+                  员工底薪:
                 </div>
                 <div class="col-sm-3">
-                  <input type="text" class="form-control" th:value="${customer.getCustMobile()}" id="mobile" />
+                  <input type="text" class="form-control" th:value="${worker.getWorkerSalary()}" name="workerSalary" id="workerSalary" />
                 </div>
               </div>
               <div class="form-group">
                 <div class ="col-md-1">
-                  客户地址:
+                  员工提成:
                 </div>
                 <div class="col-sm-3">
-                  <input type="text" class="form-control" th:value="${customer.getCustAddress()}" id="address" />
+                  <input type="text" class="form-control" th:value="${worker.getWorkerTicheng()}" id="ticheng" name="workerTicheng" />
                 </div>
 
               </div>
               <div class="form-group">
                 <div class ="col-md-1">
-                  水票数量:
+                  员工照片:
                 </div>
                 <div class="col-sm-3">
-                  <input type="text" class="form-control" th:value="${customer.getCustTicket()}" id="ticket" />
+                  <input type="file" class="form-search" th:value="${worker.getWorkerImage()}" name="image" id="image" />
                 </div>
               </div>
               <div class="form-group">
                 <div class ="col-md-1">
-                  <input type="button" class="btn btn-primary form-control"  th:onclick="'javascript:saveCustomer('+${currentPage}+')'" value="提交"/>
-                </div>
-                <div class ="col-md-1">
-                  <input type="button" class="btn btn-default form-control"  onclick="goBack()" value="返回" />
+                  照片预览:
                 </div>
                 <div class="col-sm-3">
+                  <img id="preview" th:src="${#httpServletRequest.getScheme() + '://'+#httpServletRequest.getServerName()+':'+
+                  #httpServletRequest.getServerPort()+ '/' + worker.getWorkerImage()}">
                 </div>
+              </div>
+              <div class="form-group">
+              <div class ="col-md-1">
+                <input type="button" class="btn btn-default form-control"   th:onclick="'javascript:saveWorker('+${currentPage}+')'" value="提交"/>
+              </div>
+              <div class ="col-md-1">
+                <input type="button" class="btn btn-default form-control"  onclick="goBack()" value="返回" />
+              </div>
               </div>
             </form>
           </div>

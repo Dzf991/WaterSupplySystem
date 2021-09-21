@@ -1,27 +1,33 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <!--Bootstrap固定框架-->
-    <link rel='stylesheet' th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.css}">
-    <link rel='stylesheet' th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap-theme.css}">
-    <!--图标库-->
-    <link rel='stylesheet' th:href='@{/css/material-design-iconic-font.min.css}'>
-    <!--核心样式-->
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-    <div th:fragment="head">
-        <nav class="navbar navbar-default">
-            <div class="container-fluid" >
-                <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <a href="#"><i class="zmdi zmdi-notifications text-danger"></i>
-                        </a>
-                    </li>
-                    <li><a href="#" th:text="${session.account.getUserName()}"></a></li>
-                </ul>
-            </div>
-        </nav>
-    </div>
 </head>
+
+<body>
+<div th:fragment="head">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid" >
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <div class="btn-group">
+                        <button id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Dropdown trigger
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dLabel">
+                            <li><a href="#">Action</a></li>
+                            <li><a href="#">Another action</a></li>
+                            <li><a href="#">Something else here</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">Separated link</a></li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+
+        </div>
+    </nav>
+</div>
+</body>
 
 </html>

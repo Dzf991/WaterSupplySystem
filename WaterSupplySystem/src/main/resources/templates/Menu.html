@@ -3,18 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <title>校园送水后台管理系统</title>
+  <script th:src="@{/webjars/jquery/3.3.1/jquery.js}"></script>
 
 <!--Bootstrap固定框架-->
 <link rel='stylesheet' th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.css}">
+  <link rel='stylesheet' th:href="@{/webjars/bootstrap/3.3.7/js/bootstrap.js}">
 <link rel='stylesheet' th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap-theme.css}">
 <!--图标库-->
 <link rel='stylesheet' th:href='@{/css/material-design-iconic-font.min.css}'>
 <!--核心样式-->
 <link rel="stylesheet" th:href="@{/css/style.css}">
-<script th:src="@{/webjars/jquery/3.3.1/jquery.js}"></script>
 </head>
 <script>
-
+  $().ready(function () {
+    $('.dropdown-toggle').dropdown();
+  })
 
 
 </script>

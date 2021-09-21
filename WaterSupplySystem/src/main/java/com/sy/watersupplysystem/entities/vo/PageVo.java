@@ -8,7 +8,7 @@ public class PageVo<T> {
     // 当前页
     private Integer currentPage = 1;
     // 每页显示的总条数
-    private Integer pageSize = 3;
+    private Integer pageSize = 5;
     // 总条数
     private Integer totalNum;
     // 总页数
@@ -95,4 +95,6 @@ public class PageVo<T> {
     public void setResultData(List<T> resultData) {
         this.resultData = resultData;
     }
+
+
 }

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sy.watersupplysystem.mapper.HistoryMapper">
+
+    <resultMap id="HistoryResultMap" type="com.sy.watersupplysystem.entities.History">
+        <id column="hid" jdbcType="INTEGER" property="hid"/>
+        <result column="cust_id" jdbcType="INTEGER" property="custId"/>
+        <result column="worker_id" jdbcType="INTEGER" property="workerId"/>
+        <result column="send_water_time" jdbcType="DATE" property="sendWaterTime"/>
+        <result column="send_water_count" jdbcType="INTEGER" property="sendWaterCount"/>
+    </resultMap>
+
+<!--    <resultMap id="SendHistoryResultMap" type="com.sy.watersupplysystem.entities.vo.SendHistory">-->
+<!--        <id column="hid" jdbcType="INTEGER" property="hid"/>-->
+<!--        <result column="custName" jdbcType="STRING" property="custName"/>-->
+<!--        <result column="workerName" jdbcType="STRING" property="workerName"/>-->
+<!--        <result column="send_water_time" jdbcType="DATE" property="sendWaterTime"/>-->
+<!--        <result column="send_water_count" jdbcType="INTEGER" property="sendWaterCount"/>-->
+<!--    </resultMap>-->
+
+    <select id="getHistoryList" resultType="SendHistory">
+        select hid,
+        c.cust_name as custName,
+        w.worker_name as workerName,
+        send_water_time as sendWaterTime,
+        send_water_count as sendWaterCount
+        from tb_history h
+        join tb_worker w
+        on h.worker_id = w.wid
+        join tb_customer c
+        on h.cust_id = c.cid
+        <where>
+            <if test="sendHistory.startDate != null ">
+                send_water_time &gt; #{sendHistory.startDate}
+            </if>
+            <if test="sendHistory.endDate != null">
+                and send_water_time &lt; #{sendHistory.endDate}
+            </if>
+        </where>
+        limit #{pageVo.startIndex},#{pageVo.pageSize}
+    </select>
+
+    <select id="getHistoryTotal" resultType="int" parameterType="SendHistory">
+        select count(*) as total from tb_history
+        <where>
+            <if test="startDate != null">
+                send_water_time &gt; #{startDate}
+            </if>
+            <if test="endDate != null">
+                and send_water_time &lt; #{endDate}
+            </if>
+        </where>
+    </select>
+
+
+    <delete id="delChecked" parameterType="int" >
+        delete from tb_history
+        where hid in
+        <foreach collection="array" item="hid" open="(" close=")" separator=",">
+            #{hid}
+        </foreach>
+    </delete>
+
+    <delete id="delHistory" parameterType="int">
+        delete from tb_history
+        where hid = #{hid}
+    </delete>
+
+    <insert id="addHistory" parameterType="History" >
+        insert into tb_history
+        (cust_id,
+            worker_id,
+            send_water_time,
+            send_water_count)
+            values
+            (#{custId},#{workerId},#{sendWaterTime},#{sendWaterCount})
+    </insert>
+
+    <select id="getHistoryById" parameterType="int" resultMap="HistoryResultMap">
+        select hid,
+               cust_id,
+               worker_id,
+               send_water_time,
+               send_water_count
+        from tb_history
+        where hid = #{hid}
+    </select>
+
+    <update id="updateHistory" parameterType="History">
+        update tb_history
+        set cust_id  = #{custId},
+            worker_id = #{workerId},
+            send_water_time = #{sendWaterTime},
+            send_water_count = #{sendWaterCount}
+        where hid = #{hid}
+    </update>
+</mapper>

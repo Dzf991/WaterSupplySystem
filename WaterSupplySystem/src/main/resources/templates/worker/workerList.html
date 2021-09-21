@@ -2,56 +2,56 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>校园送水后台管理系统</title>
+  <title>校园送水后台管理系统</title>
 
-<!--Bootstrap固定框架-->
-<link rel='stylesheet' th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.css}">
-<link rel='stylesheet' th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap-theme.css}">
-<!--图标库-->
-<link rel='stylesheet' th:href="@{/css/material-design-iconic-font.min.css}">
-<!--核心样式-->
-<link rel="stylesheet" th:href="@{/css/style.css}">
-<script th:src="@{/webjars/jquery/3.3.1/jquery.js}"></script>
+  <script th:src="@{/webjars/jquery/3.3.1/jquery.js}"></script>
+  <!--Bootstrap固定框架-->
+  <link rel='stylesheet' th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.css}">
+  <link rel='stylesheet' th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap-theme.css}">
+  <!--图标库-->
+  <link rel='stylesheet' th:href="@{/css/material-design-iconic-font.min.css}">
+  <!--核心样式-->
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <script th:src="@{/js/bootstrap-paginator.js}"></script>
+
 </head>
 <style>
-  img{
-    height: 100px;
-  }
-  .left{
-    text-align: left;
+
+  .div_right{
+    float: right;
   }
 
 </style>
 <script>
 
   $().ready(function () {
-    getWorkerList();
-
+    let pageNo = /*[[${currentPage}]]*/ 1;
+    getWorkerList(pageNo);
   });
-
-
-
 
 
   /**
    * 获取员工列表
    */
-  function getWorkerList() {
+  function getWorkerList(currentPage) {
     $.ajax({
       url : "getWorkerList",
       type : "get",
+      data : {
+        "currentPage" : currentPage
+      },
       dataType : "json",
       success : function (resp) {
           if(resp.code === 200){
             $("#workerTable").empty();
             $("#workerTable").append(
                     "<tr>\n" +
-                    "<td>员工编号</td>\n" +
-                    "<td>员工名称</td>\n" +
-                    "<td>员工工资</td>\n" +
-                    "<td>员工提成</td>\n" +
-                    "<td>员工图片</td>\n" +
-                    "<td>操作</td>\n" +
+                    "<td><strong>员工编号</strong></td>\n" +
+                    "<td><strong>员工名称</strong></td>\n" +
+                    "<td><strong>员工工资</strong></td>\n" +
+                    "<td><strong>员工提成</strong></td>\n" +
+                    "<td><strong>员工图片</strong></td>\n" +
+                    "<td><strong>操作</strong></td>\n" +
                     "</tr>\n"
             );
 
@@ -60,28 +60,207 @@
               $("#workerTable").append("<tr>\n" +
                       "<td style='line-height: 100px'>"+worker.wid+"</td>\n" +
                       "<td style='line-height: 100px'>"+worker.workerName+"</td>\n" +
-                      "<td style='line-height: 100px'>"+worker.workerSalary+"</td>\n" +
+                      "<td style='line-height: 100px'>" +
+                      "<a class='glyphicon glyphicon-minus' style='cursor: pointer' onclick='reduceSalary("+worker.wid+")'></a>&nbsp;<span id='"+worker.wid+"'>"+worker.workerSalary+"</span>"+
+                      "&nbsp;<a class='glyphicon glyphicon-plus' style='cursor: pointer' onclick='increaseSalary("+worker.wid+")'></a>" +
+                      "</td>\n" +
                       "<td style='line-height: 100px'>"+worker.workerTicheng+"</td>\n" +
-                      "<td><img src="+imagePath+"></td>\n" +
+                      "<td><img class='img-circle' width='100px' height='100px' src="+imagePath+"></td>\n" +
                       "<td style='line-height: 100px'>\n" +
-                      "<button class='btn btn-default' onclick='goUpdate("+worker.wid+")'>修改</button>\n" +
-                      "<button class='btn btn-danger' onclick='delBtn("+worker.wid+")'>删除</button>\n" +
+                      "<button class='btn btn-warning' onclick='goWorkerUpdate("+worker.wid+","+resp.currentPage+")'>修改</button>\n" +
+                      "<button class='btn btn-danger' onclick='delWorker("+worker.wid+","+resp.currentPage+")'>删除</button>\n" +
                       "</td>\n" +
                       "</tr>");
             })
+            $("#paging").empty();
+            $("#paging").append("<span>当前第"+resp.currentPage+"页,共"+resp.totalPage+"页。</span>\n" +
+                    "<span>一共"+resp.totalNum+"条记录</span>")
           }else {
-            alert("客户为空！")
+            alert("员工为空！")
           }
+        var element = $("#pageBtn");
+        var options = {
+          bootstrapMajorVersion: 3,
+          currentPage: currentPage, // 当前页数
+          //numberOfPages: 5, // 显示按钮的数量
+          totalPages: resp.totalPage, // 总页数
+          itemTexts: function (type, page, current) {
+            switch (type) {
+              case "first":
+                return "首页";
+              case "prev":
+                return "上一页";
+              case "next":
+                return "下一页";
+              case "last":
+                return "末页";
+              case "page":
+                return page;
+            }
+          },
+          // 点击事件，用于通过Ajax来刷新整个list列表
+          onPageClicked: function (event, originalEvent, type, page) {
+            getWorkerList(page,5);
+          }
+        };
+        element.bootstrapPaginator(options);
       }
     })
   }
   /**
    * 跳转到添加页面
    */
-  function goAdd() {
-    window.location = "goAdd";
+  function goWorkerAdd() {
+    window.location = "goWorkerAdd";
   }
 
+  /**
+   * 跳转到修改页面
+   * @param wid
+   * @param currentPage
+   */
+  function goWorkerUpdate(wid,currentPage) {
+    window.location = "goWorkerUpdate?wid="+wid + "&currentPage="+currentPage;
+  }
+
+  /**
+   * 删除员工
+   * @param wid
+   * @param currentPage
+   */
+  function delWorker(wid,currentPage) {
+    if(confirm("是否要删除该员工？")){
+      $.ajax({
+        url : "delWorker",
+        type : "get",
+        data : {
+          "wid" : wid
+        },
+        dataType :　"json",
+        success : function (resp) {
+          if (resp.code ===200) {
+            alert("删除成功！");
+            window.location = "goWorkerList?currentPage="+currentPage;
+          }else {
+            alert("删除失败！");
+
+          }
+        }
+      })
+    }
+  }
+
+  /**
+   *减薪
+   * @param wid
+   */
+  function reduceSalary(wid) {
+    let $workerSalary = $("#"+wid);
+    let workerSalary = $workerSalary[0].innerText;
+    workerSalary = workerSalary - 100;
+    $workerSalary[0].innerText = workerSalary;
+    $.ajax({
+      url:"updateWorkerSalary",
+      type : "get",
+      data : {
+        "wid":wid,
+        "workerSalary" : workerSalary
+      }
+    })
+  }
+
+  /**
+   * 加薪
+   * @param wid
+   */
+  function increaseSalary(wid) {
+    let $workerSalary = $("#"+wid);
+    let workerSalary = $workerSalary[0].innerText;
+    workerSalary = parseInt(workerSalary) + 100;
+    $workerSalary[0].innerText = workerSalary;
+    $.ajax({
+      url:"updateWorkerSalary",
+      type : "get",
+      data : {
+        "wid":wid,
+        "workerSalary" : workerSalary
+      }
+    })
+  }
+  function notSendWorker(currentPage) {
+    $.ajax({
+      url : "notSendWorker",
+      type : "get",
+      data : {
+        "currentPage" : currentPage
+      },
+      dataType : "json",
+      success : function (resp) {
+        if(resp.code === 200){
+          $("#workerTable").empty();
+          $("#workerTable").append(
+                  "<tr>\n" +
+                  "<td><strong>员工编号</strong></td>\n" +
+                  "<td><strong>员工名称</strong></td>\n" +
+                  "<td><strong>员工工资</strong></td>\n" +
+                  "<td><strong>员工提成</strong></td>\n" +
+                  "<td><strong>员工图片</strong></td>\n" +
+                  "<td><strong>操作</strong></td>\n" +
+                  "</tr>\n"
+          );
+
+          $.each(resp.resultData,function (i,worker){
+            var imagePath = "/" + worker.workerImage;
+            $("#workerTable").append("<tr>\n" +
+                    "<td style='line-height: 100px'>"+worker.wid+"</td>\n" +
+                    "<td style='line-height: 100px'>"+worker.workerName+"</td>\n" +
+                    "<td style='line-height: 100px'>" +
+                    "<a class='glyphicon glyphicon-minus' style='cursor: pointer' onclick='reduceSalary("+worker.wid+")'></a>&nbsp;<span id='"+worker.wid+"'>"+worker.workerSalary+"</span>"+
+                    "&nbsp;<a class='glyphicon glyphicon-plus' style='cursor: pointer' onclick='increaseSalary("+worker.wid+")'></a>" +
+                    "</td>\n" +
+                    "<td style='line-height: 100px'>"+worker.workerTicheng+"</td>\n" +
+                    "<td><img class='img-circle' width='100px' height='100px' src="+imagePath+"></td>\n" +
+                    "<td style='line-height: 100px'>\n" +
+                    "<button class='btn btn-warning' onclick='goWorkerUpdate("+worker.wid+","+resp.currentPage+")'>修改</button>\n" +
+                    "<button class='btn btn-danger' onclick='delWorker("+worker.wid+","+resp.currentPage+")'>删除</button>\n" +
+                    "</td>\n" +
+                    "</tr>");
+          })
+          $("#paging").empty();
+          $("#paging").append("<span>当前第"+resp.currentPage+"页,共"+resp.totalPage+"页。</span>\n" +
+                  "<span>一共"+resp.totalNum+"条记录</span>")
+        }else {
+          alert("员工为空！")
+        }
+        var element = $("#pageBtn");
+        var options = {
+          bootstrapMajorVersion: 3,
+          currentPage: currentPage, // 当前页数
+          //numberOfPages: 5, // 显示按钮的数量
+          totalPages: resp.totalPage, // 总页数
+          itemTexts: function (type, page, current) {
+            switch (type) {
+              case "first":
+                return "首页";
+              case "prev":
+                return "上一页";
+              case "next":
+                return "下一页";
+              case "last":
+                return "末页";
+              case "page":
+                return page;
+            }
+          },
+          // 点击事件，用于通过Ajax来刷新整个list列表
+          onPageClicked: function (event, originalEvent, type, page) {
+            notSendWorker(page,5);
+          }
+        };
+        element.bootstrapPaginator(options);
+      }
+    })
+  }
 </script>
 <body>
 
@@ -105,7 +284,8 @@
 
           <div class="col-md-12">
             <div class="col-md-9" style="padding: 0">
-            <button  class="btn btn-primary" onclick="goAdd()">添加员工</button>
+            <button  class="btn btn-primary" onclick="goWorkerAdd()">添加员工</button>
+              <button  class="btn btn-danger" onclick="notSendWorker(1)">查看未送水员工</button>
 
             </div>
 
@@ -113,7 +293,9 @@
               <form class="form-inline">
                 <div class="form-group">
                   <input type="text" class="form-control" id="name" name="name" placeholder="请输入"/>
-                  <button type="button" id="serchBtn" class="btn btn-default">搜索</button>
+                  <button type="button" id="serchBtn" class="btn btn-default">
+                    <span class="glyphicon glyphicon-search" aria-label="true"></span>
+                  </button>
                 </div>
               </form>
             </div>
@@ -123,6 +305,14 @@
 
               </tbody>
             </table>
+            <!--分页栏-->
+            <div class="div_right">
+              <div id="paging"></div>
+              <nav aria-label="..." style="text-align:center;">
+                <ul id="pageBtn" class="pagination">
+                </ul>
+              </nav>
+            </div>
           </div>
         </div>
       </div>
