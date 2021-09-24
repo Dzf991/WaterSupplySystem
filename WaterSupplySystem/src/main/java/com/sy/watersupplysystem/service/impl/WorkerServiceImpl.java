@@ -2,6 +2,7 @@ package com.sy.watersupplysystem.service.impl;
 
 import com.sy.watersupplysystem.entities.Worker;
 import com.sy.watersupplysystem.entities.vo.PageVo;
+import com.sy.watersupplysystem.entities.vo.SalaryVo;
 import com.sy.watersupplysystem.mapper.WorkerMapper;
 import com.sy.watersupplysystem.service.WorkerService;
 import org.springframework.stereotype.Service;
@@ -96,6 +97,19 @@ public class WorkerServiceImpl implements WorkerService {
     public List<Worker> getWorkers() {
         return workerMapper.getWorkers();
 
+    }
+
+    @Override
+    public PageVo getWorkerSalary(SalaryVo salaryVo) {
+        PageVo<SalaryVo> pageVo = new PageVo<>();
+        List<SalaryVo> workerSalary = workerMapper.getWorkerSalary(salaryVo);
+        if (workerSalary != null){
+            pageVo.setCode(200);
+            pageVo.setResultData(workerSalary);
+        }else {
+            pageVo.setCode(400);
+        }
+        return pageVo;
     }
 
 }

@@ -54,4 +54,10 @@ public class AccountController {
         return "index";
     }
 
+    @GetMapping(value = "/exit")
+    public String exit(HttpServletRequest request){
+        request.getSession().removeAttribute("account");
+        return "redirect:index";
+    }
+
 }

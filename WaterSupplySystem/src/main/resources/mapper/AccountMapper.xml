@@ -4,22 +4,22 @@
     <resultMap id="AccountResultMap" type="com.sy.watersupplysystem.entities.Account">
         <id column="aid" jdbcType="INTEGER" property="aid"/>
         <result column="user_name" jdbcType="VARCHAR" property="userName"/>
-        <result column="user_pwd" jdbcType="VARCHAR" property="userPassword"/>
+        <result column="user_password" jdbcType="VARCHAR" property="userPassword"/>
         <result column="user_mobile" jdbcType="VARCHAR" property="userMobile"/>
         <result column="user_mail" jdbcType="VARCHAR" property="userMail"/>
     </resultMap>
 
 
     <select id="login" resultMap="AccountResultMap" parameterType="Account">
-        select user_name,user_pwd,user_mobile,user_mail
+        select user_name,user_password,user_mobile,user_mail
         from tb_account
         where user_name = #{userName}
-        and user_pwd = #{userPassword}
+        and user_password = #{userPassword}
     </select>
 
     <insert id="register" parameterType="Account">
         insert into tb_account
-        (user_name,user_pwd,user_mobile,user_mail)
+        (user_name,user_password,user_mobile,user_mail)
         values
         (#{userName},#{userPassword},#{userMobile},#{userMail})
     </insert>

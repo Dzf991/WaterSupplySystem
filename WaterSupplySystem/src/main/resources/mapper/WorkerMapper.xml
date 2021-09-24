@@ -88,4 +88,29 @@
         select wid,worker_name
         from tb_worker
     </select>
+
+
+    <select id="getWorkerSalary" parameterType="SalaryVo" resultType="SalaryVo">
+    SELECT
+	w.worker_name AS workerName,
+	w.worker_ticheng AS workerTicheng,
+	w.worker_salary AS workerSalary,
+	SUM(h.send_water_count) AS sendWaterCount
+    FROM
+	tb_history h
+    JOIN tb_worker w ON h.worker_id = w.wid
+    GROUP BY
+	w.worker_name,
+	w.worker_salary,
+	w.worker_ticheng
+        <where>
+            <if test="startDate != null">
+                send_water_time &gt;= #{startDate}
+            </if>
+            <if test="endDate != null">
+                and send_water_time &lt;= #{endDate}
+            </if>
+        </where>
+    </select>
+
 </mapper>

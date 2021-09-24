@@ -2,6 +2,7 @@ package com.sy.watersupplysystem.service;
 
 import com.sy.watersupplysystem.entities.Worker;
 import com.sy.watersupplysystem.entities.vo.PageVo;
+import com.sy.watersupplysystem.entities.vo.SalaryVo;
 
 import java.util.List;
 
@@ -21,4 +22,6 @@ public interface WorkerService {
     PageVo<Worker> notSendWorker(Integer currentPage);
 
     List<Worker> getWorkers();
+
+    PageVo getWorkerSalary(SalaryVo salaryVo);
 }

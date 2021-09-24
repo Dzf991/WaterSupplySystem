@@ -2,6 +2,7 @@ package com.sy.watersupplysystem.controller;
 
 import com.sy.watersupplysystem.entities.Worker;
 import com.sy.watersupplysystem.entities.vo.PageVo;
+import com.sy.watersupplysystem.entities.vo.SalaryVo;
 import com.sy.watersupplysystem.service.WorkerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,6 +46,11 @@ public class WorkerController {
     public String goWorkerList(Model model, Integer currentPage){
         model.addAttribute("currentPage",currentPage);
         return "worker/workerList";
+    }
+
+    @GetMapping(value = "/goWorkerSalary")
+    public String goWorkerSalary(){
+        return "worker/workerSalary";
     }
 
 
@@ -123,4 +129,14 @@ public class WorkerController {
     public void updateWorkerSalary(Integer wid, String workerSalary){
         workerService.updateWorkerSalary(wid,workerSalary);
     }
+
+    @ResponseBody
+    @GetMapping("/getWorkerSalary")
+    public Object getWorkerSalary(SalaryVo salaryVo){
+        PageVo pageVo = workerService.getWorkerSalary(salaryVo);
+        return pageVo;
+    }
+
+
+
 }

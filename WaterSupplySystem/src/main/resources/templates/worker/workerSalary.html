@@ -1,0 +1,145 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+  <title>校园送水后台管理系统</title>
+
+  <!--Bootstrap固定框架-->
+  <link rel='stylesheet' th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.css}">
+  <script type="text/javascript" th:src="@{/js/jquery-3.1.1.min.js}" ></script>
+  <script type="text/javascript" th:src="@{/js/bootstrap.js}" ></script>
+  <link rel='stylesheet' th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap-theme.css}">
+  <!--图标库-->
+  <link rel='stylesheet' th:href="@{/css/material-design-iconic-font.min.css}">
+  <!--核心样式-->
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <script th:src="@{/js/bootstrap-paginator.js}"></script>
+
+</head>
+<style>
+
+  .div_right{
+    float: right;
+  }
+
+</style>
+<script>
+
+  $().ready(function () {
+    getWorkerSalary();
+  });
+
+
+  /**
+   * 获取员工列表
+   */
+  function getWorkerSalary() {
+    $.ajax({
+      url : "getWorkerSalary",
+      type : "get",
+      data : {
+        "startDate" : $("#startDate").val(),
+        "endDate" : $("#endDate").val()
+      },
+      dataType : "json",
+      success : function (resp) {
+          if(resp.code === 200){
+            $("#workerTable").empty();
+            $("#workerTable").append(
+                    "<tr>" +
+                    "<td>员工名称</td>" +
+                    "<td>基本工资</td>" +
+                    "<td>每桶水提成</td>" +
+                    "<td>送水数量</td>" +
+                    "<td>实发工资</td>" +
+                    "</tr>"
+            );
+
+            $.each(resp.resultData,function (i,workerSalary){
+              let netSalary = workerSalary.workerSalary + (workerSalary.sendWaterCount * workerSalary.workerTicheng);
+              $("#workerTable").append("<tr>" +
+                      "<td>"+workerSalary.workerName+"</td>" +
+                      "<td>"+workerSalary.workerSalary+"</td>" +
+                      "<td>" +workerSalary.workerTicheng+"</td>" +
+                      "<td>"+workerSalary.sendWaterCount+"</td>" +
+                      "<td>"+netSalary+"</td>" +
+                      "</tr>");
+            });
+          }else {
+            alert("员工为空！")
+          }
+      }
+    })
+  }
+
+  function searchHistory() {
+    getWorkerSalary();
+  }
+
+</script>
+<body>
+
+<div id="viewport">
+
+  <!-- Sidebar -->
+  <div id="sidebar">
+    <div id="side" th:include="com/side :: side"></div>
+
+  </div>
+  
+  <!-- Content -->
+  <div id="content">
+    <div id="head" th:include="com/head :: head"></div>
+
+
+
+    <div class="container-fluid">
+      <div class="container-fluid">
+        <div class="row">
+
+          <div class="col-md-12">
+            <div class="col-md-9" style="padding: 0">
+              <form class="form-inline">
+                <div class="form-group">
+                  <label>开始日期：</label>
+                  <input type="date" class="form-control" id="startDate" name="startDate"/>
+                  <label>结束日期：</label>
+                  <input type="date" class="form-control" id="endDate" name="endDate"/>
+                  <button onclick="searchHistory()" class="btn btn-default">
+                    <span class="glyphicon glyphicon-search"></span>
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <div class="col-md-3">
+              <form class="form-inline">
+                <div class="form-group">
+
+                </div>
+              </form>
+            </div>
+
+            <table class="table table-hover table-striped" >
+              <tbody id="workerTable">
+
+              </tbody>
+            </table>
+            <!--分页栏-->
+            <div class="div_right">
+              <div id="paging"></div>
+              <nav aria-label="..." style="text-align:center;">
+                <ul id="pageBtn" class="pagination">
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

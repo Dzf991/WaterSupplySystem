@@ -31,10 +31,10 @@
         on h.cust_id = c.cid
         <where>
             <if test="sendHistory.startDate != null ">
-                send_water_time &gt; #{sendHistory.startDate}
+                send_water_time &gt;= #{sendHistory.startDate}
             </if>
             <if test="sendHistory.endDate != null">
-                and send_water_time &lt; #{sendHistory.endDate}
+                and send_water_time &lt;= #{sendHistory.endDate}
             </if>
         </where>
         limit #{pageVo.startIndex},#{pageVo.pageSize}

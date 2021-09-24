@@ -4,9 +4,10 @@
 <meta charset="UTF-8">
   <title>校园送水后台管理系统</title>
 
-  <script th:src="@{/webjars/jquery/3.3.1/jquery.js}"></script>
   <!--Bootstrap固定框架-->
   <link rel='stylesheet' th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.css}">
+  <script type="text/javascript" th:src="@{/js/jquery-3.1.1.min.js}" ></script>
+  <script type="text/javascript" th:src="@{/js/bootstrap.js}" ></script>
   <link rel='stylesheet' th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap-theme.css}">
   <!--图标库-->
   <link rel='stylesheet' th:href="@{/css/material-design-iconic-font.min.css}">
@@ -45,35 +46,39 @@
           if(resp.code === 200){
             $("#workerTable").empty();
             $("#workerTable").append(
-                    "<tr>\n" +
-                    "<td><strong>员工编号</strong></td>\n" +
-                    "<td><strong>员工名称</strong></td>\n" +
-                    "<td><strong>员工工资</strong></td>\n" +
-                    "<td><strong>员工提成</strong></td>\n" +
-                    "<td><strong>员工图片</strong></td>\n" +
-                    "<td><strong>操作</strong></td>\n" +
-                    "</tr>\n"
+                    "<tr>" +
+                    "<td>员工编号</td>" +
+                    "<td>员工名称</td>" +
+                    "<td>员工工资</td>" +
+                    "<td>员工提成</td>" +
+                    "<td>员工图片</td>" +
+                    "<td>操作</td>" +
+                    "</tr>"
             );
 
             $.each(resp.resultData,function (i,worker){
               var imagePath = "/" + worker.workerImage;
-              $("#workerTable").append("<tr>\n" +
-                      "<td style='line-height: 100px'>"+worker.wid+"</td>\n" +
-                      "<td style='line-height: 100px'>"+worker.workerName+"</td>\n" +
+              if (worker.workerImage === null || worker.workerImage === ''){
+                imagePath = "/images/touxiang.png"
+
+              }
+              $("#workerTable").append("<tr>" +
+                      "<td style='line-height: 100px'>"+worker.wid+"</td>" +
+                      "<td style='line-height: 100px'>"+worker.workerName+"</td>" +
                       "<td style='line-height: 100px'>" +
                       "<a class='glyphicon glyphicon-minus' style='cursor: pointer' onclick='reduceSalary("+worker.wid+")'></a>&nbsp;<span id='"+worker.wid+"'>"+worker.workerSalary+"</span>"+
                       "&nbsp;<a class='glyphicon glyphicon-plus' style='cursor: pointer' onclick='increaseSalary("+worker.wid+")'></a>" +
-                      "</td>\n" +
-                      "<td style='line-height: 100px'>"+worker.workerTicheng+"</td>\n" +
-                      "<td><img class='img-circle' width='100px' height='100px' src="+imagePath+"></td>\n" +
-                      "<td style='line-height: 100px'>\n" +
-                      "<button class='btn btn-warning' onclick='goWorkerUpdate("+worker.wid+","+resp.currentPage+")'>修改</button>\n" +
-                      "<button class='btn btn-danger' onclick='delWorker("+worker.wid+","+resp.currentPage+")'>删除</button>\n" +
-                      "</td>\n" +
+                      "</td>" +
+                      "<td style='line-height: 100px'>"+worker.workerTicheng+"</td>" +
+                      "<td><img class='img-circle' width='100px' height='100px' src="+imagePath+"></td>" +
+                      "<td style='line-height: 100px'>" +
+                      "<button class='btn btn-warning' onclick='goWorkerUpdate("+worker.wid+","+resp.currentPage+")'>修改</button>" +
+                      "<button class='btn btn-danger' onclick='delWorker("+worker.wid+","+resp.currentPage+")'>删除</button>" +
+                      "</td>" +
                       "</tr>");
-            })
+            });
             $("#paging").empty();
-            $("#paging").append("<span>当前第"+resp.currentPage+"页,共"+resp.totalPage+"页。</span>\n" +
+            $("#paging").append("<span>当前第"+resp.currentPage+"页,共"+resp.totalPage+"页。</span>" +
                     "<span>一共"+resp.totalNum+"条记录</span>")
           }else {
             alert("员工为空！")
@@ -187,6 +192,11 @@
       }
     })
   }
+
+  /**
+   * 查看未送水员工
+   * @param currentPage
+   */
   function notSendWorker(currentPage) {
     $.ajax({
       url : "notSendWorker",
@@ -199,35 +209,38 @@
         if(resp.code === 200){
           $("#workerTable").empty();
           $("#workerTable").append(
-                  "<tr>\n" +
-                  "<td><strong>员工编号</strong></td>\n" +
-                  "<td><strong>员工名称</strong></td>\n" +
-                  "<td><strong>员工工资</strong></td>\n" +
-                  "<td><strong>员工提成</strong></td>\n" +
-                  "<td><strong>员工图片</strong></td>\n" +
-                  "<td><strong>操作</strong></td>\n" +
-                  "</tr>\n"
+                  "<tr>" +
+                  "<td>员工编号</td>" +
+                  "<td>员工名称</td>" +
+                  "<td>员工工资</td>" +
+                  "<td>员工提成</td>" +
+                  "<td>员工图片</td>" +
+                  "<td>操作</td>" +
+                  "</tr>"
           );
 
           $.each(resp.resultData,function (i,worker){
             var imagePath = "/" + worker.workerImage;
-            $("#workerTable").append("<tr>\n" +
-                    "<td style='line-height: 100px'>"+worker.wid+"</td>\n" +
-                    "<td style='line-height: 100px'>"+worker.workerName+"</td>\n" +
+            if (worker.workerImage === null || worker.workerImage === ''){
+              imagePath = "/images/touxiang.png"
+            }
+            $("#workerTable").append("<tr>" +
+                    "<td style='line-height: 100px'>"+worker.wid+"</td>" +
+                    "<td style='line-height: 100px'>"+worker.workerName+"</td>" +
                     "<td style='line-height: 100px'>" +
                     "<a class='glyphicon glyphicon-minus' style='cursor: pointer' onclick='reduceSalary("+worker.wid+")'></a>&nbsp;<span id='"+worker.wid+"'>"+worker.workerSalary+"</span>"+
                     "&nbsp;<a class='glyphicon glyphicon-plus' style='cursor: pointer' onclick='increaseSalary("+worker.wid+")'></a>" +
-                    "</td>\n" +
-                    "<td style='line-height: 100px'>"+worker.workerTicheng+"</td>\n" +
-                    "<td><img class='img-circle' width='100px' height='100px' src="+imagePath+"></td>\n" +
-                    "<td style='line-height: 100px'>\n" +
-                    "<button class='btn btn-warning' onclick='goWorkerUpdate("+worker.wid+","+resp.currentPage+")'>修改</button>\n" +
-                    "<button class='btn btn-danger' onclick='delWorker("+worker.wid+","+resp.currentPage+")'>删除</button>\n" +
-                    "</td>\n" +
+                    "</td>" +
+                    "<td style='line-height: 100px'>"+worker.workerTicheng+"</td>" +
+                    "<td><img class='img-circle' width='100px' height='100px' src="+imagePath+"></td>" +
+                    "<td style='line-height: 100px'>" +
+                    "<button class='btn btn-warning' onclick='goWorkerUpdate("+worker.wid+","+resp.currentPage+")'>修改</button>" +
+                    "<button class='btn btn-danger' onclick='delWorker("+worker.wid+","+resp.currentPage+")'>删除</button>" +
+                    "</td>" +
                     "</tr>");
           })
           $("#paging").empty();
-          $("#paging").append("<span>当前第"+resp.currentPage+"页,共"+resp.totalPage+"页。</span>\n" +
+          $("#paging").append("<span>当前第"+resp.currentPage+"页,共"+resp.totalPage+"页。</span>" +
                   "<span>一共"+resp.totalNum+"条记录</span>")
         }else {
           alert("员工为空！")

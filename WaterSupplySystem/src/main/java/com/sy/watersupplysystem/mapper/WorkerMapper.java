@@ -2,6 +2,7 @@ package com.sy.watersupplysystem.mapper;
 
 import com.sy.watersupplysystem.entities.Worker;
 import com.sy.watersupplysystem.entities.vo.PageVo;
+import com.sy.watersupplysystem.entities.vo.SalaryVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -27,4 +28,6 @@ public interface WorkerMapper {
     int notSendWorkerTotal();
 
     List<Worker> getWorkers();
+
+    List<SalaryVo> getWorkerSalary(SalaryVo salaryVo);
 }

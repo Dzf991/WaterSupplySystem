@@ -8,23 +8,19 @@
     <nav class="navbar navbar-default">
         <div class="container-fluid" >
             <ul class="nav navbar-nav navbar-right">
-                <li>
-                    <div class="btn-group">
-                        <button id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Dropdown trigger
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dLabel">
-                            <li><a href="#">Action</a></li>
-                            <li><a href="#">Another action</a></li>
-                            <li><a href="#">Something else here</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="#">Separated link</a></li>
-                        </ul>
-                    </div>
+                <li class="dropdown">
+                    <a href="#" id="accountMenu" class="dropdown-toggle" data-toggle="dropdown" >
+                        <span class="glyphicon glyphicon-user"></span>
+                        <span th:text="${session.account.getUserName()}"></span>
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">个人中心</a></li>
+                        <li class="divider"></li>
+                        <li><a href="/exit">退出系统</a></li>
+                    </ul>
                 </li>
             </ul>
-
         </div>
     </nav>
 </div>
